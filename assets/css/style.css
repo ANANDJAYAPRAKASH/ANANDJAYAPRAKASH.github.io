@@ -225,3 +225,49 @@ footer{display:flex;justify-content:space-between;color:#4d6159;font:9px var(--m
   .recognition-facts{grid-template-columns:1fr}
   .recognition-image-wrap{padding:18px}
 }
+
+/* Beyond Security — literature & creator section */
+.beyond-section{overflow:hidden}
+.book-feature{
+  display:grid;grid-template-columns:.72fr 1.28fr;gap:0;
+  border:1px solid var(--line);border-radius:16px;overflow:hidden;
+  background:linear-gradient(135deg,rgba(20,34,30,.88),rgba(7,17,15,.96));
+}
+.book-cover-wrap{
+  min-height:470px;padding:34px;display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(124,242,200,.09),transparent 38%),
+    linear-gradient(135deg,rgba(124,242,200,.035),transparent 60%);
+  border-right:1px solid var(--line);
+}
+.book-frame{position:relative;width:min(310px,78%);padding:8px;border:1px solid rgba(124,242,200,.22);background:#08110f;box-shadow:0 28px 80px rgba(0,0,0,.5);transform:rotate(-1.2deg);transition:transform .35s ease}
+.book-frame:hover{transform:rotate(0) translateY(-5px)}
+.book-frame img{display:block;width:100%;height:auto}
+.book-scan{position:absolute;left:10px;bottom:10px;font:7px var(--mono);letter-spacing:.12em;color:#a0b0aa;background:rgba(5,14,12,.86);padding:6px 8px;border:1px solid rgba(124,242,200,.14)}
+.book-copy{padding:52px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center}
+.book-copy h3{font-family:var(--sans);font-size:clamp(30px,4vw,53px);line-height:1.05;letter-spacing:-.045em;margin:17px 0 8px;max-width:700px}
+.book-subtitle{font:10px var(--mono);letter-spacing:.12em;color:var(--accent);text-transform:uppercase}
+.book-copy>p:not(.book-subtitle){color:var(--muted);font-size:13px;max-width:620px;margin-top:18px}
+.book-tags{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0}
+.book-tags span{font:8px var(--mono);color:#849890;border:1px solid var(--line);border-radius:999px;padding:7px 9px}
+.creator-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.creator-card{position:relative;display:flex;gap:18px;align-items:flex-start;padding:25px;border:1px solid var(--line);border-radius:13px;background:var(--panel);transition:transform .25s ease,border-color .25s ease,background .25s ease}
+.creator-card:hover{transform:translateY(-4px);border-color:rgba(124,242,200,.38);background:rgba(14,30,26,.8)}
+.creator-icon{width:42px;height:42px;flex:0 0 42px;border:1px solid rgba(124,242,200,.24);display:grid;place-items:center;border-radius:10px;color:var(--accent);font:700 17px var(--mono)}
+.creator-card h3{font-size:18px;margin:9px 0 7px;line-height:1.08}
+.creator-card p{font-size:11px;line-height:1.55;color:var(--muted);max-width:240px}
+.creator-arrow{margin-left:auto;color:#657a72;font-size:18px}
+.creator-card:hover .creator-arrow{color:var(--accent)}
+.creative-line{display:flex;align-items:center;justify-content:center;gap:16px;padding:35px 10px 0;color:#61756d;font:8px var(--mono);letter-spacing:.16em}
+.creative-line i{font-style:normal;color:var(--accent);font-size:12px}
+@media(max-width:900px){
+  .book-feature{grid-template-columns:1fr}
+  .book-cover-wrap{min-height:390px;border-right:0;border-bottom:1px solid var(--line)}
+  .creator-grid{grid-template-columns:1fr}
+}
+@media(max-width:620px){
+  .book-copy{padding:29px}
+  .book-cover-wrap{padding:22px}
+  .book-frame{width:min(270px,82%)}
+  .creative-line{gap:9px;font-size:7px}
+}
