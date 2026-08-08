@@ -1,0 +1,8 @@
+name = "anand-jayaprakash"
+main = "worker/src/index.js"
+compatibility_date = "2026-08-08"
+
+[assets]
+directory = "."
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
