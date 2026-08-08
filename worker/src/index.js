@@ -1,5 +1,5 @@
 const GOOGLE_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxojmsBMVwy2TUSLNJ2JthsV4uPtPVK9Ac6Lxi_Ljranr5LJimeltWMjlX131tQYh5S/exec";
+  "https://script.google.com/macros/s/AKfycbytguN2QN9kbJLw97CL2PL8Oj3hyjhvZ75uOmvjZvSGGUTbdCf1liTCUWf-_YqJ9xCB/exec";
 
 export default {
   async fetch(request, env) {
@@ -40,9 +40,6 @@ export default {
         const cf = request.cf || {};
 
         const payload = {
-          // Temporary — we'll replace this with env.VISITOR_SECRET
-          // after the secret is configured.
-          secret: env.VISITOR_SECRET,
 
           page: data.page || "/",
           referrer: data.referrer || "Direct",
