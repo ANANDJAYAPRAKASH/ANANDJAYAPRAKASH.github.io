@@ -1,43 +1,3 @@
-(function trackPortfolioVisit() {
-  const VISITOR_API =
-    "https://anand-jayaprakash.anandjayaprakash00.workers.dev/api/visit";
-
-  if (sessionStorage.getItem("portfolio_visit_tracked")) {
-    return;
-  }
-
-  const payload = {
-    page: window.location.pathname,
-    referrer: document.referrer || "Direct",
-    device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
-      ? "Mobile"
-      : "Desktop",
-    browser: navigator.userAgent
-  };
-
-  fetch(VISITOR_API, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload),
-    keepalive: true
-  })
-    .then(response => response.json())
-    .then(result => {
-      console.log("Visitor tracking:", result);
-
-      if (result.success) {
-        sessionStorage.setItem(
-          "portfolio_visit_tracked",
-          "true"
-        );
-      }
-    })
-    .catch(error => {
-      console.error("Visitor tracking failed:", error);
-    });
-})();
 /* Web Audio UI sound helper */
 let audioCtx;
 function getAudioContext() {
@@ -274,4 +234,53 @@ $('#year').textContent = new Date().getFullYear();
     clearTimeout(window.__musicScrollTimer);
     window.__musicScrollTimer = setTimeout(() => { audio.volume = 0.24; }, 450);
   }, {passive:true});
+})();
+
+// ==========================================
+// PORTFOLIO VISITOR TRACKING
+// ==========================================
+
+(function trackPortfolioVisit() {
+  const VISITOR_API =
+    "https://anand-jayaprakash.anandjayaprakash00.workers.dev/api/visit";
+
+  // One notification per browser session
+  if (sessionStorage.getItem("portfolio_visit_tracked")) {
+    return;
+  }
+
+  const payload = {
+    page: window.location.pathname,
+    referrer: document.referrer || "Direct",
+    device: /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)
+      ? "Mobile"
+      : "Desktop",
+    browser: navigator.userAgent
+  };
+
+  fetch(VISITOR_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload),
+    keepalive: true
+  })
+    .then(response => response.json())
+    .then(result => {
+      console.log("Visitor tracking:", result);
+
+      if (result.success) {
+        sessionStorage.setItem(
+          "portfolio_visit_tracked",
+          "true"
+        );
+      }
+    })
+    .catch(error => {
+      console.error(
+        "Visitor tracking failed:",
+        error
+      );
+    });
 })();
