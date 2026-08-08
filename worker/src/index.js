@@ -55,18 +55,38 @@ export default {
         };
 
         const response = await fetch(GOOGLE_SCRIPT_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(payload)
+});
 
-        if (!response.ok) {
-          throw new Error(
-            `Google Apps Script returned ${response.status}`
-          );
-        }
+const responseText = await response.text();
+
+console.log("Google Apps Script response:", responseText);
+
+if (!response.ok) {
+  throw new Error(
+    `Google Apps Script returned HTTP ${response.status}: ${responseText}`
+  );
+}
+
+let googleResult;
+
+try {
+  googleResult = JSON.parse(responseText);
+} catch {
+  throw new Error(
+    `Invalid response from Google Apps Script: ${responseText}`
+  );
+}
+
+if (!googleResult.success) {
+  throw new Error(
+    googleResult.error || "Google Apps Script failed to send email"
+  );
+}
 
         return new Response(
           JSON.stringify({
