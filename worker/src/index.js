@@ -5,7 +5,9 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Handle CORS preflight
+    // ==========================================
+    // CORS PREFLIGHT
+    // ==========================================
     if (request.method === "OPTIONS") {
       return new Response(null, {
         status: 204,
@@ -17,8 +19,11 @@ export default {
       });
     }
 
-    // Visitor notification endpoint
+    // ==========================================
+    // VISITOR NOTIFICATION API
+    // ==========================================
     if (url.pathname === "/api/visit") {
+
       if (request.method !== "POST") {
         return new Response(
           JSON.stringify({
@@ -36,58 +41,89 @@ export default {
       }
 
       try {
+        // ------------------------------------------
+        // Read visitor request
+        // ------------------------------------------
         const data = await request.json();
+
+        // Cloudflare visitor information
         const cf = request.cf || {};
 
-        const payload = {
+        // ------------------------------------------
+        // Build payload for Google Apps Script
+        // ------------------------------------------
+        const workerSecret = env.VISITOR_SECRET || "";
+const payload = {
+  secret: workerSecret,
 
-          page: data.page || "/",
-          referrer: data.referrer || "Direct",
+  page: data.page || "/",
+  referrer: data.referrer || "Direct",
 
-          country: cf.country || "Unknown",
-          region: cf.region || "Unknown",
-          city: cf.city || "Unknown",
+  country: cf.country || "Unknown",
+  region: cf.region || "Unknown",
+  city: cf.city || "Unknown",
 
-          device: data.device || "Unknown",
-          browser: data.browser || "Unknown",
+  device: data.device || "Unknown",
+  browser: data.browser || "Unknown",
 
-          timestamp: new Date().toISOString()
-        };
-
+  timestamp: new Date().toISOString()
+};
+        // ------------------------------------------
+        // Send visitor information to Google Apps Script
+        // ------------------------------------------
         const response = await fetch(GOOGLE_SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload)
-});
+          method: "POST",
 
-const responseText = await response.text();
+          headers: {
+            "Content-Type": "application/json"
+          },
 
-console.log("Google Apps Script response:", responseText);
+          body: JSON.stringify(payload)
+        });
 
-if (!response.ok) {
-  throw new Error(
-    `Google Apps Script returned HTTP ${response.status}: ${responseText}`
-  );
-}
+        // ------------------------------------------
+        // Read Google Apps Script response
+        // ------------------------------------------
+        const responseText = await response.text();
 
-let googleResult;
+        console.log(
+          "Google Apps Script response:",
+          responseText
+        );
 
-try {
-  googleResult = JSON.parse(responseText);
-} catch {
-  throw new Error(
-    `Invalid response from Google Apps Script: ${responseText}`
-  );
-}
+        // HTTP error
+        if (!response.ok) {
+          throw new Error(
+            `Google Apps Script returned HTTP ${response.status}: ${responseText}`
+          );
+        }
 
-if (!googleResult.success) {
-  throw new Error(
-    googleResult.error || "Google Apps Script failed to send email"
-  );
-}
+        // ------------------------------------------
+        // Parse Google response
+        // ------------------------------------------
+        let googleResult;
 
+        try {
+          googleResult = JSON.parse(responseText);
+        } catch {
+          throw new Error(
+            `Invalid response from Google Apps Script: ${responseText}`
+          );
+        }
+
+        // ------------------------------------------
+        // Check actual Apps Script result
+        // ------------------------------------------
+        if (!googleResult.success) {
+          throw new Error(
+            googleResult.error ||
+            "Google Apps Script failed to send email"
+          );
+        }
+
+        // ------------------------------------------
+        // SUCCESS
+        // ------------------------------------------
         return new Response(
           JSON.stringify({
             success: true,
@@ -103,6 +139,15 @@ if (!googleResult.success) {
         );
 
       } catch (error) {
+
+        // ------------------------------------------
+        // ERROR
+        // ------------------------------------------
+        console.error(
+          "Visitor notification error:",
+          error
+        );
+
         return new Response(
           JSON.stringify({
             success: false,
@@ -119,7 +164,9 @@ if (!googleResult.success) {
       }
     }
 
-    // Serve the existing portfolio
+    // ==========================================
+    // SERVE PORTFOLIO
+    // ==========================================
     return env.ASSETS.fetch(request);
   }
 };
